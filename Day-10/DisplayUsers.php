@@ -67,7 +67,7 @@
         if(!$conn){
             die("The DB is not Connected" . $mysqli_connect_error());
         }else{
-            echo "<br><br>The DB is conected<br>";
+            echo "<br><br>The DB is conected<br>"; ///I am doing push to github
         }
         ?> -->
     </body>
