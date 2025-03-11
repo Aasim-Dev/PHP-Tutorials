@@ -65,6 +65,58 @@ echo "SELECT * FROM `employee` <br>
         SELECT MAX(Salary)  
         FROM salary  
         WHERE Salary < (SELECT MAX(Salary) FROM employee)  
-    );<br>";
+    );
+    ALTER TABLE employee MODIFY City CHAR(100);
+SELECT * FROM `employee`
+ALTER TABLE employee MODIFY City CHAR(100) NOT NULL;
+SELECT * FROM `employee`
+SELECT employee.Name, salary.Salary FROM salary JOIN employee ON salary.Employee_ID = employee.Employee_ID WHERE Position = 'Senior Software Developer';
+SELECT * FROM `salary`
+SELECT * FROM `employee`
+SELECT MAX(Salary) FROM salary WHERE Salary < (SELECT MAX(Salary) FROM salary);
+SELECT * FROM salary;
+SELECT * FROM `employee`
+ALTER TABLE employee ADD CHECK(Age>=18);
+SELECT * FROM `salary`
+SELECT * FROM `employee`
+INSERT INTO employee (Name, Age, City) Values ('Arhan', 17, 'Kolkata');
+SELECT * FROM `employee`
+INSERT INTO employee (Name, Age, City) Values ('Arhan', 18, 'Kolkata');
+SELECT * FROM `employee`
+DELETE FROM employee WHERE Employee_ID=16;
+SELECT * FROM `employee`
+CREATE VIEW KC AS SELECT Name, City FROM employee WHERE City='Kolkata';
+SELECT * FROM `kc`
+BACKUP DATABASE localstore filepath = 'C:\Users\Aasim\OneDrive\Desktop\8th Sem Internship'
+BACKUP DATABASE localstore TO DISK = 'C:\Users\Aasim\OneDrive\Desktop\8th Sem Internship\localstore.bak'
+SELECT * FROM `salary`;
+SELECT * FROM `salary`;
+SELECT * FROM `salary`;
+BACKUP DATABASE localstore TO DISK = 'C:\Users\Aasim\OneDrive\Desktop\8th Sem Internship\localstore.bak'
+SELECT Name, Age CASE WHEN Age > 30 THEN 'Age is greater than 30' WHEN Age < 30 THEN 'Age is Less Than 30' END AS NA FROM emplyee
+Collapse Edit Explain Profiling Query failed
+SELECT Name, Age
+CASE
+    WHEN Age > 30 THEN 'Age is greater than 30'
+    WHEN Age < 30 THEN 'Age is Less Than 30'
+    ELSE 'The Age is equals to 30'
+END AS NA 
+FROM employee
+SELECT Name, Age, CASE WHEN Age > 30 THEN 'Age is greater than 30' WHEN Age < 30 THEN 'Age is Less Than 30' ELSE 'The Age is equals to 30' END AS na FROM employee;
+SELECT * FROM `salary`
+ALTER TABLE salary MODIFY Position VARCHAR(255) NULL;
+ALTER TABLE salary MODIFY Salary DECIMAL(10,2) NULL;
+ALTER TABLE salary MODIFY Status BOOLEAN(0) NULL;
+ALTER TABLE salary MODIFY Status TINYINT(0) NULL;
+ALTER TABLE salary MODIFY created_at TIMESTAMP NULL;
+SELECT * FROM `employee`
+SELECT * FROM `employee`
+SELECT * FROM salary;
+SELECT DISTINCT City FROM employee WHERE COUNT(City);
+SELECT DISTINCT City FROM employee GROUP BY City;
+SELECT DISTINCT City FROM employee GROUP BY Name;
+SELECT DISTINCT City FROM employee GROUP BY Employee_ID;
+Expand Requery Edit Explain Profiling Bookmark Database : localstore Queried time : 16:5:24
+SELECT COUNT(DISTINCT City) FROM employee;<br>";
 
 ?>
