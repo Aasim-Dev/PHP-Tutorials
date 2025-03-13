@@ -134,7 +134,7 @@
            $stmt  = $connect->prepare("SELECT Email FROM phpform3 WHERE Email = ? " );
            $stmt -> bind_param("s", $email);
            $stmt -> execute();
-           $stmt -> store_result();
+           $stmt -> store_result(); 
 
            if($stmt->num_rows > 0 ){
             $errors["email"] = "this email is already registered";

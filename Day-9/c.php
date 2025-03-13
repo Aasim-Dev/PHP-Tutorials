@@ -117,6 +117,72 @@ SELECT DISTINCT City FROM employee GROUP BY City;
 SELECT DISTINCT City FROM employee GROUP BY Name;
 SELECT DISTINCT City FROM employee GROUP BY Employee_ID;
 Expand Requery Edit Explain Profiling Bookmark Database : localstore Queried time : 16:5:24
-SELECT COUNT(DISTINCT City) FROM employee;<br>";
+SELECT COUNT(DISTINCT City) FROM employee;
+SELECT Salary FROM salary ORDER BY Salary DESC;
+SELECT Salary FROM salary ORDER BY Salary DESC LIMIT 1 OFFSET 1;
+SELECT Salary FROM salary ORDER BY Salary DESC LIMIT 1;
+SELECT Salary FROM salary ORDER BY Salary DESC LIMIT 1 OFFSET 2;
+SELECT Salary FROM salary ORDER BY Salary ASC LIMIT 1 OFFSET 1;
+SELECT Salary FROM salary ORDER BY Salary DESC LIMIT 1;
+SELECT Salary FROM salary ORDER BY Salary ASC LIMIT 1;
+SELECT * FROM employee;
+SELECT Name FROM employee WHERE EXISTS( SELECT 1 FROM salary salary.Employee_ID = employee.Employee_ID )
+SELECT Name FROM employee WHERE EXISTS( SELECT 1 FROM salary WHERE salary.Employee_ID = employee.Employee_ID );
+SELECT * FROM salary;
+DELETE FROM salary WHERE ID IN (2, 3, 6, 12);
+SELECT Name FROM employee WHERE EXISTS( SELECT 1 FROM salary WHERE salary.Employee_ID = employee.Employee_ID );
+SELECT COUNT(Name) FROM employee WHERE EXISTS( SELECT 1 FROM salary WHERE salary.Employee_ID = employee.Employee_ID );
+SELECT AVG(Salary) FROM salary;
+SELECT Name FROM employee WHERE salary.Salary > (SELECT AVG(Salary) FROM salary)
+SELECT Name FROM employee WHERE Salary FROM salary > (SELECT AVG(Salary) FROM salary)
+SELECT Employee_ID FROM salary WHERE salary.Salary > (SELECT AVG(Salary) FROM salary);
+SELECT Name FROM employee WHERE Employee_ID IN (3, 11);
+SELECT Position, Employee_ID FROM salary WHERE salary.Salary > (SELECT AVG(Salary) FROM salary);
+Collapse Edit Explain Profiling Query failed
+
+/*new queries*/
+SELECT e.Name, s.Position, s.Employee_ID FROM employee as e JOIN salary as s ON employee.Employee_ID=salary.Employee_ID
+WHERE salary.Salary > (SELECT AVG(Salary) FROM salary);
+Collapse Edit Explain Profiling Query failed
+SELECT e.Name, s.Position, s.Employee_ID FROM employee as e JOIN salary as s ON employee.Employee_ID=salary.Employee_ID
+WHERE s.Salary > (SELECT AVG(s.Salary));
+Collapse Requery Edit Explain Profiling Bookmark Database : localstore Queried time : 9:25:15
+SELECT e.Name, s.Position, s.Employee_ID FROM employee as e JOIN salary as s ON e.Employee_ID=s.Employee_ID
+WHERE s.Salary > (SELECT AVG(s.Salary));
+SELECT e.Name, s.Position, s.Employee_ID FROM employee as e JOIN salary as s ON e.Employee_ID=s.Employee_ID WHERE s.Salary > (SELECT AVG(s.Salary) FROM salary as s);
+SELECT COUNT(Name) FROM employee WHERE EXISTS( SELECT 1 FROM salary WHERE salary.Employee_ID = employee.Employee_ID );
+Collapse Edit Explain Profiling Query failed
+SELECT Name, Age, Employee_ID FROM (SELECT * , ROWNUM over(partition BY City ORDER BY Employee_ID) as ab
+FROM employee
+ORDER BY Employee_ID) x
+WHERE x.ab > 2
+/*new queries*/
+SELECT Name, Age, Employee_ID FROM (SELECT * , row_number() over (partition by City ORDER BY Employee_ID) as ab FROM employee ORDER BY Employee_ID) x WHERE x.ab > 2;
+SELECT Name, Age, Employee_ID FROM (SELECT * , ROWNUM over(partition BY City ORDER BY Employee_ID) as ab FROM employee ORDER BY Employee_ID) x WHERE x.ab > 3
+SELECT Name, Age, Employee_ID FROM (SELECT * , ROWNUM over(partition BY City ORDER BY Employee_ID) as ab FROM employee ORDER BY Employee_ID) x WHERE x.ab > 2
+SELECT Name, Age, Employee_ID FROM (SELECT * , row_number() over (partition by City ORDER BY Employee_ID) as ab FROM employee ORDER BY Employee_ID) x WHERE x.ab > 2;
+SELECT Name, Age, Employee_ID FROM (SELECT * , row_number() over (partition by City ORDER BY Employee_ID) as ab FROM employee ORDER BY Employee_ID) x WHERE x.ab > 3;
+SELECT Name, Age, Employee_ID FROM (SELECT * , ROWNUM over(partition BY City ORDER BY Employee_ID) as ab FROM employee ORDER BY Employee_ID) x WHERE x.ab > 1
+
+/*new queries*/
+Collapse Requery Edit Explain Profiling Bookmark Database : localstore Queried time : 9:59:34
+SELECT Name, Age, Employee_ID FROM (SELECT * , row_number() over (partition by City ORDER BY Employee_ID) as ab
+FROM employee
+ORDER BY Employee_ID) x
+WHERE x.ab > 1;
+SELECT Name, Age, Employee_ID FROM (SELECT * , row_number() over (partition by City) FROM employee ORDER BY Employee_ID) x WHERE x > 1;
+SELECT Name, Age, Employee_ID FROM (SELECT * , row_number() over (partition by City) FROM employee ORDER BY Employee_ID) AS x WHERE x > 1;
+SELECT Name, Age, Employee_ID FROM (SELECT * , row_number() over (partition by City ORDER BY Employee_ID) FROM employee ORDER BY Employee_ID) AS x WHERE x > 1;
+select * from employee;
+update employee set age = 25 where Name = 'Vivek';
+select * from employee;
+update employee set age = 27 where Name = 'Vivek';
+
+/*new queries*/
+select * from employee e1 join employee e2 where e1.Employee_ID <> e2.Employee_ID and e1.City=e2.City and e1.Age=e2.Age;
+select * from employee e1 join employee e2 where e1.Employee_ID <> e2.Employee_ID and e1.City=e2.City and e1.Age<>2.Age;
+select * from employee e1 join employee e2 where e1.Employee_ID <> e2.Employee_ID and e1.City=e2.City and e1.Age<>e2.Age;
+Expand Requery Edit Explain Profiling Bookmark Database : localstore Queried time : 10:21:44
+select * from employee e1 join employee e2 where e1.Employee_ID<>e2.Employee_ID and e1.Age=e2.Age and e1.City<>e2.City;<br>";
 
 ?>
