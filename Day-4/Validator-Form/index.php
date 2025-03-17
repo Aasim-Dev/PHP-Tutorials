@@ -14,8 +14,6 @@
     <body>
         <h2> Registration Form </h2>
         <form id="registrationform" action=" " method="POST">
-            <label for="field">Required, audio files only: </label>
-            <input type="file" class="left" id="field" name="field"><br><br>
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" ><br><br>
             <label for="email">Email:</label>
@@ -36,10 +34,6 @@
                 },"Password must include at least 1 uppercase, 1 lowercase, 1 number, and 1 special character.s");
                 $("#registrationform").validate({
                     rules:{
-                        field: {
-                            required: true,
-                            accept: "audio/*"
-                        },
                         name: {
                             required:true,
                             minlength: 4,
@@ -92,19 +86,19 @@
                 $email = htmlspecialchars(trim($_POST["email"]));
                 $password = htmlspecialchars(trim($_POST["password"]));
                 $confirm_password = htmlspecialchars(trim($_POST["confirm_password"]));
-                $error = [];
+                $errors = [];
 
                 if(empty($name) || strlen($name) < 4){
-                    $error["name"] = "Name is required and should be of minimum 20 characters";
+                    $errors["name"] = "Name is required and should be of minimum 20 characters";
                 }
                 if(empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)){
-                    $error["email"] = "Email is required and should be a valid email address";
+                    $errors["email"] = "Email is required and should be a valid email address";
                 }
                 if(empty($password) || strlen($password) < 8){
-                    $error["password"] = "Password is required and should be of minimum 8 characters";
+                    $errors["password"] = "Password is required and should be of minimum 8 characters";
                 }
                 if(empty($confirm_password) || $confirm_password != $password){
-                    $error["confirm_password"] = "Confirm Password is required and should be same as password";
+                    $errors["confirm_password"] = "Confirm Password is required and should be same as password";
                 }
                 if (empty($errors)) {
                     // Success message

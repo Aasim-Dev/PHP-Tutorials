@@ -6,7 +6,7 @@
 
     $conn = mysqli_connect($servername, $username, $password, $db);
     if($conn){
-        echo "The DB is connected Successfully<br>";
+        echo " ";
     }else{
         echo "The DB is not connected successfully<br>" . $mysqli_connect_error();
     }
@@ -24,22 +24,38 @@
         $stmt->close();
         exit(); // Stop further execution
     }
+    // Handle User Insertion and Editing
+
+
+    // if (isset($_POST['user_id']) && !isset($_POST['edit_user'])) {
+    //     $id = intval($_POST['user_id']); // Ensure integer
+    //     $stmt = $conn->prepare("UPDATE users SET Name = ?, Email = ?, City = ? WHERE User_ID = ?");
+    //     $stmt->bind_param("sssi", $name, $email, $city, $id);
+    //     if($stmt->execute()){
+    //         echo "User updated successfully!";
+    //     }else{
+    //         echo "Error: " . $conn->error;
+    //     }
+    //     $stmt->close();
+
+    // }
     
     // Handle User Insertion and Editing
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["name"])) {
-        $name = htmlspecialchars(trim($_POST["name"]));
-        $email = htmlspecialchars(trim($_POST["email"]));
-        $city = htmlspecialchars(trim($_POST["city"]));
+        $name = test_input(htmlspecialchars(trim($_POST["name"])));
+        $email = test_input(htmlspecialchars(trim($_POST["email"])));
+        $city = test_input(htmlspecialchars(trim($_POST["city"])));
         $user_id = isset($_POST["user_id"]) ? intval($_POST["user_id"]) : null;
         $errors = [];
     
         // Validation
-        if (empty($name) || strlen($name) < 4) {
-            $errors["name"] = "Name is required and must be at least 4 characters.";
-        }
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors["email"] = "Valid email is required.";
-        } else {
+        // if (empty($name) || strlen($name) < 4) {
+        //     $errors["name"] = "Name is required and must be at least 4 characters.";
+        // }
+        // if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        //     $errors["email"] = "Valid email is required.";
+        // } 
+        if(!empty($email)){
             $stmt = $conn->prepare("SELECT Email FROM users WHERE Email = ? AND User_ID != ?");
             $stmt->bind_param("si", $email, $user_id);
             $stmt->execute();
@@ -76,6 +92,12 @@
             }
         }
     }
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
 ?>
 
 <html>
@@ -87,6 +109,13 @@
         <script src = "https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
         <style>
             /* General Styling */
+            .error{
+                color: red;
+            }
+
+            .c1{
+                color: red;
+            }
             body {
                 font-family: Arial, sans-serif;
                 text-align: center;
@@ -184,6 +213,7 @@
                 border-radius: 8px;
                 text-align: center;
                 box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+                opacity: 1;
             }
 
             #modalTitle {
@@ -236,16 +266,16 @@
             <?php
             $result = mysqli_query($conn, "SELECT * FROM users");
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>{$row['User_ID']}</td>";
-                echo "<td>{$row['Name']}</td>";
-                echo "<td>{$row['Email']}</td>";
-                echo "<td>{$row['City']}</td>";
-                echo "<td>";
-                echo "<button class='btn-edit' data-id='{$row['User_ID']}' data-name='{$row['Name']}' data-email='{$row['Email']}' data-city='{$row['City']}'>Edit</button>";
-                echo "<button class='btn-delete' data-id='{$row['User_ID']}'>Delete</button>";
-                echo "</td>";
-                echo "</tr>";
+                echo "<tr>
+                <td>" .$row['User_ID'] . "</td>
+                <td>" . $row['Name'] . "</td>
+                <td>" . $row['Email'] . "</td>
+                <td>" . $row['City'] ."</td>
+                <td>
+                <button class='btn-edit' data-id='{$row['User_ID']}' data-name='{$row['Name']}' data-email='{$row['Email']}' data-city='{$row['City']}'>Edit</button>
+                <button class='btn-delete' data-id='{$row['User_ID']}'>Delete</button>
+                </td>
+                </tr>";
             }
             ?>
         </table>
@@ -282,12 +312,14 @@
 
                 // Custom Validation Rules
                 $.validator.addMethod("validString", function (value, element) {
-                    return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
-                }, "The field must contain only letters.");
+                    value = value.trim(); // Trim spaces before validation
+                    $(element).val(value); // Update input field with trimmed value
+                    return value.length > 0 && /^[A-Za-z\s]+$/.test(value);
+                }, "Enter a valid name (Only Letters allowed You have Enter Spaces).");
 
-                $.validator.addMethod("validEmail", function (value, element) {
-                    return this.optional(element) || /^\S+@\S+\.\S+$/.test(value);
-                }, "Enter a valid email address.");
+                // $.validator.addMethod("validEmail", function (value, element) {
+                //     return this.optional(element) || /^\S+@\S+\.\S+$/.test(value);
+                // }, "Enter a valid email address.");
 
                 $.validator.addMethod("validCity", function (value, element) {
                     return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
@@ -311,6 +343,14 @@
                             validCity: true
                         }
                     },
+
+                    highlight: function (element) {
+                        $(element).css("border", "2px solid red");
+                    },
+                    unhighlight: function (element) {
+                        $(element).css("border", "1px solid #ddd");
+                    },
+
                     messages: {
                         name: {
                             required: "Name is required",
