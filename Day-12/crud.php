@@ -55,6 +55,8 @@
         // if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         //     $errors["email"] = "Valid email is required.";
         // } 
+
+        //Check if email is already registered with PHP Validation using MYSQLI Query.
         if(!empty($email)){
             $stmt = $conn->prepare("SELECT Email FROM users WHERE Email = ? AND User_ID != ?");
             $stmt->bind_param("si", $email, $user_id);
@@ -67,6 +69,7 @@
             $stmt->close();
         }
     
+        //If there is no errors than the form should be submitted.
         if (empty($errors)) {
             if ($user_id) {
                 // Update User
@@ -243,7 +246,7 @@
         <h1> Welcome To User Management System</h1>
         <button id="addUserBtn">Add Yourself From Here</button>
         <div class="overlay">
-            <div class="modal">
+            <div class="modal"> <!-- Creating a Modal Form So that all the things remain on the same page -->
                 <h2 id="modalTitle">Add User</h2>
                 <form id="userForm" method="POST">
                     <input type="hidden" id="userId" name="user_id">
@@ -255,22 +258,29 @@
                 </form>
             </div>
         </div>
+
+        <!-- To Show the data from the database in the table form -->
         <table>
             <tr>
                 <th>ID</th> 
                 <th>Name</th> 
                 <th>Email</th> 
                 <th>City</th> 
+                <th>Status</th>
+                <th>Created At</th>
                 <th>Actions</th>
             </tr>
             <?php
-            $result = mysqli_query($conn, "SELECT * FROM users");
+            $sql1 = "SELECT u.User_ID, u.Name, u.Email, u.City, u.Status, w.created_at FROM users u JOIN wallet w ON u.User_ID = w.User_ID";
+            $result = mysqli_query($conn, $sql1);
             while ($row = mysqli_fetch_assoc($result)) {
                 echo "<tr>
                 <td>" .$row['User_ID'] . "</td>
                 <td>" . $row['Name'] . "</td>
                 <td>" . $row['Email'] . "</td>
                 <td>" . $row['City'] ."</td>
+                <td>" . $row['Status'] ."</td>
+                <td>" . $row['created_at'] ."</td>
                 <td>
                 <button class='btn-edit' data-id='{$row['User_ID']}' data-name='{$row['Name']}' data-email='{$row['Email']}' data-city='{$row['City']}'>Edit</button>
                 <button class='btn-delete' data-id='{$row['User_ID']}'>Delete</button>
@@ -279,6 +289,8 @@
             }
             ?>
         </table>
+
+        <!-- JQuery Validations -->
         <script>
              $(document).ready(function () {
                 $("#addUserBtn").click(function () {
@@ -306,6 +318,7 @@
                     if (confirm("Are you sure you want to delete this user?")) {
                         $.post("", { user_id: userId, delete_user: true }, function (response) {
                             location.reload();
+                            alert("The User Deleted Successfully");
                         });
                     }
                 });
@@ -315,7 +328,7 @@
                     value = value.trim(); // Trim spaces before validation
                     $(element).val(value); // Update input field with trimmed value
                     return value.length > 0 && /^[A-Za-z\s]+$/.test(value);
-                }, "Enter a valid name (Only Letters allowed You have Enter Spaces).");
+                }, "This field is required and should contain only letters.");
 
                 // $.validator.addMethod("validEmail", function (value, element) {
                 //     return this.optional(element) || /^\S+@\S+\.\S+$/.test(value);

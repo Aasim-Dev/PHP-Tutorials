@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>AJAX handling</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    </head>
+    <body>
+        <h1>Click The Button</h1>
+        <button id="btn">Click Me</button>
+        <div id="result">Here is Some Message for you.</div>
+        <script>
+            $(document).ready(function(){
+                $('#btn').click(function() {
+                    $("#result").load("aasim.txt");
+                });
+            });
+        </script>
+    </body>
+</html>
